@@ -14,6 +14,18 @@ contextBridge.exposeInMainWorld('electronAPI', {
   updateTrainingModule: (moduleId, moduleData) => ipcRenderer.invoke('update-training-module', moduleId, moduleData),
   deleteTrainingModule: (moduleId) => ipcRenderer.invoke('delete-training-module', moduleId),
   
+  // Employee operations
+  createEmployee: (employeeData) => ipcRenderer.invoke('create-employee', employeeData),
+  getEmployees: () => ipcRenderer.invoke('get-employees'),
+  getEmployeeById: (employeeId) => ipcRenderer.invoke('get-employee-by-id', employeeId),
+  updateEmployee: (employeeId, employeeData) => ipcRenderer.invoke('update-employee', employeeId, employeeData),
+  deleteEmployee: (employeeId) => ipcRenderer.invoke('delete-employee', employeeId),
+  
+  // Training assignment operations
+  assignTrainingToEmployee: (employeeId, programId) => ipcRenderer.invoke('assign-training-to-employee', employeeId, programId),
+  getEmployeeTrainingAssignments: (employeeId) => ipcRenderer.invoke('get-employee-training-assignments', employeeId),
+  updateTrainingProgress: (employeeId, moduleId, status, score) => ipcRenderer.invoke('update-training-progress', employeeId, moduleId, status, score),
+  
   // Menu event listener
   onMenuNewProgram: (callback) => ipcRenderer.on('menu-new-program', callback),
   

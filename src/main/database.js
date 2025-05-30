@@ -309,6 +309,270 @@ function getTrainingProgramsWithModuleCounts() {
 }
 
 /**
+ * Create a new employee
+ */
+function createEmployee(employeeData) {
+  return new Promise((resolve, reject) => {
+    const { first_name, last_name, email, hire_date, department, position } = employeeData;
+    
+    db.run(
+      `INSERT INTO employees (first_name, last_name, email, hire_date, department, position) 
+       VALUES (?, ?, ?, ?, ?, ?)`,
+      [first_name, last_name, email, hire_date, department, position],
+      function(err) {
+        if (err) {
+          reject(err);
+          return;
+        }
+        
+        resolve({
+          id: this.lastID,
+          first_name,
+          last_name,
+          email,
+          hire_date,
+          department,
+          position,
+          is_active: 1,
+          created_date: new Date().toISOString()
+        });
+      }
+    );
+  });
+}
+
+/**
+ * Get all employees
+ */
+function getEmployees() {
+  return new Promise((resolve, reject) => {
+    db.all(
+      'SELECT * FROM employees WHERE is_active = 1 ORDER BY last_name, first_name',
+      [],
+      (err, rows) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+        resolve(rows);
+      }
+    );
+  });
+}
+
+/**
+ * Get employee by ID
+ */
+function getEmployeeById(id) {
+  return new Promise((resolve, reject) => {
+    db.get(
+      'SELECT * FROM employees WHERE id = ? AND is_active = 1',
+      [id],
+      (err, row) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+        resolve(row);
+      }
+    );
+  });
+}
+
+/**
+ * Update employee
+ */
+function updateEmployee(employeeId, employeeData) {
+  return new Promise((resolve, reject) => {
+    const { first_name, last_name, email, hire_date, department, position } = employeeData;
+    
+    db.run(
+      `UPDATE employees 
+       SET first_name = ?, last_name = ?, email = ?, hire_date = ?, department = ?, position = ?
+       WHERE id = ?`,
+      [first_name, last_name, email, hire_date, department, position, employeeId],
+      function(err) {
+        if (err) {
+          reject(err);
+          return;
+        }
+        resolve({ id: employeeId, ...employeeData });
+      }
+    );
+  });
+}
+
+/**
+ * Delete employee (soft delete)
+ */
+function deleteEmployee(employeeId) {
+  return new Promise((resolve, reject) => {
+    db.run(
+      'UPDATE employees SET is_active = 0 WHERE id = ?',
+      [employeeId],
+      function(err) {
+        if (err) {
+          reject(err);
+          return;
+        }
+        resolve({ id: employeeId });
+      }
+    );
+  });
+}
+
+/**
+ * Assign training program to employee
+ */
+function assignTrainingToEmployee(employeeId, programId) {
+  return new Promise((resolve, reject) => {
+    // First, get all modules for this program
+    getModulesByProgramId(programId)
+      .then(modules => {
+        if (modules.length === 0) {
+          resolve({ message: 'No modules found in this program' });
+          return;
+        }
+
+        // Create progress records for each module
+        const insertPromises = modules.map(module => {
+          return new Promise((resolveInsert, rejectInsert) => {
+            db.run(
+              `INSERT OR REPLACE INTO training_progress 
+               (employee_id, module_id, program_id, status, started_date) 
+               VALUES (?, ?, ?, 'not_started', datetime('now'))`,
+              [employeeId, module.id, programId],
+              function(err) {
+                if (err) {
+                  rejectInsert(err);
+                } else {
+                  resolveInsert(this.lastID);
+                }
+              }
+            );
+          });
+        });
+
+        Promise.all(insertPromises)
+          .then(() => {
+            resolve({ 
+              employee_id: employeeId, 
+              program_id: programId, 
+              modules_assigned: modules.length 
+            });
+          })
+          .catch(reject);
+      })
+      .catch(reject);
+  });
+}
+
+/**
+ * Get employee training assignments
+ */
+function getEmployeeTrainingAssignments(employeeId) {
+  return new Promise((resolve, reject) => {
+    db.all(
+      `SELECT 
+        tp.id as program_id,
+        tp.name as program_name,
+        tp.description as program_description,
+        COUNT(tm.id) as total_modules,
+        COUNT(CASE WHEN tprog.status = 'completed' THEN 1 END) as completed_modules,
+        MIN(tprog.started_date) as assignment_date,
+        MAX(tprog.completed_date) as last_completed_date,
+        CASE 
+          WHEN COUNT(CASE WHEN tprog.status = 'completed' THEN 1 END) = COUNT(tm.id) THEN 'completed'
+          WHEN COUNT(CASE WHEN tprog.status IN ('in_progress', 'completed') THEN 1 END) > 0 THEN 'in_progress'
+          ELSE 'not_started'
+        END as overall_status
+       FROM training_progress tprog
+       JOIN training_programs tp ON tprog.program_id = tp.id
+       JOIN training_modules tm ON tprog.module_id = tm.id
+       WHERE tprog.employee_id = ? AND tp.is_active = 1
+       GROUP BY tp.id, tp.name, tp.description
+       ORDER BY assignment_date DESC`,
+      [employeeId],
+      (err, rows) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+        resolve(rows);
+      }
+    );
+  });
+}
+
+/**
+ * Get all employees with training progress summary
+ */
+function getEmployeesWithTrainingProgress() {
+  return new Promise((resolve, reject) => {
+    db.all(
+      `SELECT 
+        e.*,
+        COUNT(DISTINCT tp.program_id) as assigned_programs,
+        COUNT(DISTINCT CASE WHEN tp.status = 'completed' THEN tp.program_id END) as completed_programs,
+        COUNT(DISTINCT tm.id) as total_modules,
+        COUNT(DISTINCT CASE WHEN tp.status = 'completed' THEN tm.id END) as completed_modules
+       FROM employees e
+       LEFT JOIN training_progress tp ON e.id = tp.employee_id
+       LEFT JOIN training_modules tm ON tp.module_id = tm.id
+       WHERE e.is_active = 1
+       GROUP BY e.id
+       ORDER BY e.last_name, e.first_name`,
+      [],
+      (err, rows) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+        resolve(rows);
+      }
+    );
+  });
+}
+
+/**
+ * Update training progress for a specific module
+ */
+function updateTrainingProgress(employeeId, moduleId, status, score = null) {
+  return new Promise((resolve, reject) => {
+    const updateData = [status];
+    let updateQuery = 'UPDATE training_progress SET status = ?';
+
+    if (status === 'in_progress' || status === 'completed') {
+      updateQuery += ', started_date = COALESCE(started_date, datetime("now"))';
+    }
+
+    if (status === 'completed') {
+      updateQuery += ', completed_date = datetime("now")';
+      if (score !== null) {
+        updateQuery += ', score = ?';
+        updateData.push(score);
+      }
+    }
+
+    updateQuery += ' WHERE employee_id = ? AND module_id = ?';
+    updateData.push(employeeId, moduleId);
+
+    db.run(updateQuery, updateData, function(err) {
+      if (err) {
+        reject(err);
+        return;
+      }
+      resolve({ 
+        employee_id: employeeId, 
+        module_id: moduleId, 
+        status,
+        score: score || null
+      });
+    });
+  });
+}
+
+/**
  * Close database connection
  */
 function closeDatabase() {
@@ -339,5 +603,14 @@ module.exports = {
   updateModuleOrder,
   updateTrainingModule,
   deleteTrainingModule,
+  createEmployee,
+  getEmployees,
+  getEmployeeById,
+  updateEmployee,
+  deleteEmployee,
+  assignTrainingToEmployee,
+  getEmployeeTrainingAssignments,
+  getEmployeesWithTrainingProgress,
+  updateTrainingProgress,
   closeDatabase
 };

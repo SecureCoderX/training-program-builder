@@ -5,6 +5,304 @@
     box-sizing: border-box;
 }
 
+/* Employee management styles */
+.employees-header,
+.employee-detail-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+.employees-info,
+.employee-info {
+    flex: 1;
+}
+
+.employees-actions,
+.employee-actions {
+    flex-shrink: 0;
+    display: flex;
+    gap: 10px;
+}
+
+.employees-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 20px;
+}
+
+.employee-card {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    padding: 20px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    cursor: pointer;
+}
+
+.employee-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.employee-card-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.employee-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #1976d2, #42a5f5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+    font-size: 18px;
+    margin-right: 12px;
+}
+
+.employee-card-info h4 {
+    color: #2c3e50;
+    margin-bottom: 4px;
+    font-size: 16px;
+}
+
+.employee-card-meta {
+    color: #666;
+    font-size: 14px;
+}
+
+.employee-progress {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid #f0f0f0;
+}
+
+.employee-progress-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.employee-progress-item:last-child {
+    margin-bottom: 0;
+}
+
+.progress-label {
+    color: #666;
+}
+
+.progress-value {
+    font-weight: 500;
+    color: #2c3e50;
+}
+
+.progress-value.completed {
+    color: #4caf50;
+}
+
+/* Employee stats grid */
+.employee-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
+}
+
+/* Training assignments */
+.assignments-container {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    min-height: 200px;
+}
+
+.assignment-item {
+    display: flex;
+    align-items: center;
+    padding: 16px 20px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.assignment-item:last-child {
+    border-bottom: none;
+}
+
+.assignment-info {
+    flex: 1;
+}
+
+.assignment-title {
+    font-weight: 500;
+    color: #2c3e50;
+    margin-bottom: 4px;
+    font-size: 15px;
+}
+
+.assignment-meta {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 8px;
+}
+
+.assignment-progress {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.progress-bar {
+    flex: 1;
+    height: 6px;
+    background: #e0e0e0;
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: #4caf50;
+    border-radius: 3px;
+    transition: width 0.3s ease;
+}
+
+.progress-text {
+    font-size: 12px;
+    color: #666;
+    min-width: 45px;
+}
+
+.assignment-status {
+    margin-left: 16px;
+}
+
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.status-badge.not-started {
+    background: #f5f5f5;
+    color: #666;
+}
+
+.status-badge.in-progress {
+    background: #fff3e0;
+    color: #f57c00;
+}
+
+.status-badge.completed {
+    background: #e8f5e8;
+    color: #2e7d32;
+}
+
+/* Form enhancements */
+select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #d0d0d0;
+    border-radius: 4px;
+    font-size: 14px;
+    background: white;
+    cursor: pointer;
+    transition: border-color 0.2s ease;
+}
+
+select:focus {
+    outline: none;
+    border-color: #1976d2;
+    box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.1);
+}
+
+.program-preview {
+    background: #f8f9fa;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    padding: 16px;
+    margin-top: 16px;
+}
+
+.program-preview h4 {
+    color: #2c3e50;
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.program-preview p {
+    color: #666;
+    font-size: 13px;
+    margin-bottom: 12px;
+}
+
+.program-preview-stats {
+    display: flex;
+    gap: 16px;
+    font-size: 12px;
+    color: #999;
+}
+
+/* Empty states for employees */
+.employees-empty,
+.assignments-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    text-align: center;
+    color: #666;
+}
+
+.employees-empty-icon,
+.assignments-empty-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+    opacity: 0.5;
+}
+
+/* Responsive adjustments for employees */
+@media (max-width: 768px) {
+    .employees-header,
+    .employee-detail-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .employees-actions,
+    .employee-actions {
+        justify-content: stretch;
+    }
+    
+    .employees-actions .btn,
+    .employee-actions .btn {
+        flex: 1;
+    }
+    
+    .employees-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .employee-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
 /* Utility classes */
 .text-center { text-align: center; }
 .text-left { text-align: left; }

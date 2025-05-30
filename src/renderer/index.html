@@ -76,7 +76,7 @@
                             <div class="stat-label">Training Programs</div>
                         </div>
                         <div class="stat-card">
-                            <div class="stat-value">0</div>
+                            <div class="stat-value" id="total-employees">0</div>
                             <div class="stat-label">Active Employees</div>
                         </div>
                         <div class="stat-card">
@@ -151,15 +151,103 @@
                     </div>
                 </div>
 
-                <!-- Other views placeholder -->
+                <!-- Employees View -->
                 <div id="employees-view" class="view">
                     <div class="view-header">
-                        <h2>Employees</h2>
-                        <p class="view-subtitle">Manage employee profiles and training assignments</p>
+                        <div class="employees-header">
+                            <div class="employees-info">
+                                <h2>Employees</h2>
+                                <p class="view-subtitle">Manage employee profiles and training assignments</p>
+                            </div>
+                            <div class="employees-actions">
+                                <button id="add-employee-btn" class="btn btn-primary">
+                                    <span class="btn-icon">+</span>
+                                    Add Employee
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="employees-list" class="employees-grid">
+                        <!-- Employees will be loaded here -->
+                    </div>
+                </div>
+
+                <!-- Employee Detail View -->
+                <div id="employee-detail-view" class="view">
+                    <div class="view-header">
+                        <div class="breadcrumb">
+                            <a href="#" onclick="trainingApp.switchView('employees')" class="breadcrumb-link">Employees</a>
+                            <span class="breadcrumb-separator">›</span>
+                            <span id="employee-detail-name" class="breadcrumb-current">Employee Detail</span>
+                        </div>
+                        <div class="employee-detail-header">
+                            <div class="employee-info">
+                                <h2 id="employee-detail-title">Employee Name</h2>
+                                <p id="employee-detail-position" class="view-subtitle">Position • Department</p>
+                            </div>
+                            <div class="employee-actions">
+                                <button id="assign-training-btn" class="btn btn-primary">
+                                    <span class="btn-icon">+</span>
+                                    Assign Training
+                                </button>
+                                <button id="edit-employee-btn" class="btn btn-secondary">
+                                    <span class="btn-icon">✏️</span>
+                                    Edit Employee
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="employee-content">
+                        <div class="employee-stats">
+                            <div class="stat-card">
+                                <div class="stat-value" id="employee-assigned-programs">0</div>
+                                <div class="stat-label">Assigned Programs</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value" id="employee-completed-programs">0</div>
+                                <div class="stat-label">Completed Programs</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value" id="employee-completion-rate">0%</div>
+                                <div class="stat-label">Completion Rate</div>
+                            </div>
+                        </div>
+
+                        <div class="training-assignments-section">
+                            <div class="section-header">
+                                <h3>Training Assignments</h3>
+                                <p class="section-subtitle">Track progress on assigned training programs</p>
+                            </div>
+                            <div id="training-assignments-list" class="assignments-container">
+                                <!-- Assignments will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Other views placeholder -->
+                <div id="reports-view" class="view">
+                    <div class="view-header">
+                        <h2>Reports</h2>
+                        <p class="view-subtitle">Training analytics and compliance reports</p>
                     </div>
                     <div class="empty-state">
-                        <span class="empty-icon">👥</span>
-                        <h4>Employee management coming soon</h4>
+                        <span class="empty-icon">📈</span>
+                        <h4>Reporting dashboard coming soon</h4>
+                        <p>This feature will be available in the next update</p>
+                    </div>
+                </div>
+
+                <div id="settings-view" class="view">
+                    <div class="view-header">
+                        <h2>Settings</h2>
+                        <p class="view-subtitle">Application settings and preferences</p>
+                    </div>
+                    <div class="empty-state">
+                        <span class="empty-icon">⚙️</span>
+                        <h4>Settings panel coming soon</h4>
                         <p>This feature will be available in the next update</p>
                     </div>
                 </div>
@@ -305,6 +393,163 @@
                             Save Changes
                         </button>
                     </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    </div>
+
+    <!-- Add Employee Modal -->
+    <div id="add-employee-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add New Employee</h3>
+                <button class="modal-close" onclick="hideAddEmployeeModal()">&times;</button>
+            </div>
+            <form id="add-employee-form" class="modal-body">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="employee-first-name">First Name</label>
+                        <input type="text" id="employee-first-name" name="first_name" required 
+                               placeholder="John">
+                    </div>
+                    <div class="form-group">
+                        <label for="employee-last-name">Last Name</label>
+                        <input type="text" id="employee-last-name" name="last_name" required 
+                               placeholder="Smith">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="employee-email">Email Address</label>
+                    <input type="email" id="employee-email" name="email" 
+                           placeholder="john.smith@company.com">
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="employee-position">Position</label>
+                        <input type="text" id="employee-position" name="position" 
+                               placeholder="Software Developer">
+                    </div>
+                    <div class="form-group">
+                        <label for="employee-department">Department</label>
+                        <input type="text" id="employee-department" name="department" 
+                               placeholder="Engineering">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="employee-hire-date">Hire Date</label>
+                    <input type="date" id="employee-hire-date" name="hire_date">
+                </div>
+                
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="hideAddEmployeeModal()">
+                        Cancel
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        Add Employee
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Employee Modal -->
+    <div id="edit-employee-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Edit Employee</h3>
+                <button class="modal-close" onclick="hideEditEmployeeModal()">&times;</button>
+            </div>
+            <form id="edit-employee-form" class="modal-body">
+                <input type="hidden" id="edit-employee-id" name="employee_id">
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="edit-employee-first-name">First Name</label>
+                        <input type="text" id="edit-employee-first-name" name="first_name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-employee-last-name">Last Name</label>
+                        <input type="text" id="edit-employee-last-name" name="last_name" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="edit-employee-email">Email Address</label>
+                    <input type="email" id="edit-employee-email" name="email">
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="edit-employee-position">Position</label>
+                        <input type="text" id="edit-employee-position" name="position">
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-employee-department">Department</label>
+                        <input type="text" id="edit-employee-department" name="department">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="edit-employee-hire-date">Hire Date</label>
+                    <input type="date" id="edit-employee-hire-date" name="hire_date">
+                </div>
+                
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" onclick="handleDeleteEmployee()">
+                        Delete Employee
+                    </button>
+                    <div class="modal-footer-right">
+                        <button type="button" class="btn btn-secondary" onclick="hideEditEmployeeModal()">
+                            Cancel
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            Save Changes
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Assign Training Modal -->
+    <div id="assign-training-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Assign Training Program</h3>
+                <button class="modal-close" onclick="hideAssignTrainingModal()">&times;</button>
+            </div>
+            <form id="assign-training-form" class="modal-body">
+                <input type="hidden" id="assign-employee-id" name="employee_id">
+                
+                <div class="form-group">
+                    <label for="assign-program-select">Select Training Program</label>
+                    <select id="assign-program-select" name="program_id" required>
+                        <option value="">Choose a training program...</option>
+                        <!-- Programs will be loaded here -->
+                    </select>
+                </div>
+                
+                <div id="program-preview" class="program-preview" style="display: none;">
+                    <h4>Program Overview</h4>
+                    <p id="program-preview-description"></p>
+                    <div class="program-preview-stats">
+                        <span id="program-preview-modules">0 modules</span>
+                        <span id="program-preview-duration">0 minutes</span>
+                    </div>
+                </div>
+                
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="hideAssignTrainingModal()">
+                        Cancel
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        Assign Training
+                    </button>
                 </div>
             </form>
         </div>

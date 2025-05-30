@@ -1,7 +1,9 @@
 const { app, BrowserWindow, ipcMain, Menu } = require('electron');
 const path = require('path');
 const { initializeDatabase, createTrainingProgram, getTrainingPrograms, getTrainingProgramsWithModuleCounts, 
-        createTrainingModule, getModulesByProgramId, updateModuleOrder, updateTrainingModule, deleteTrainingModule } = require('./database');
+        createTrainingModule, getModulesByProgramId, updateModuleOrder, updateTrainingModule, deleteTrainingModule,
+        createEmployee, getEmployees, getEmployeeById, updateEmployee, deleteEmployee,
+        assignTrainingToEmployee, getEmployeeTrainingAssignments, getEmployeesWithTrainingProgress, updateTrainingProgress } = require('./database');
 
 class TrainingProgramApp {
   constructor() {
@@ -138,6 +140,87 @@ class TrainingProgramApp {
         return { success: true, data: result };
       } catch (error) {
         console.error('Error deleting training module:', error);
+        return { success: false, error: error.message };
+      }
+    });
+
+    // Employee management handlers
+    ipcMain.handle('create-employee', async (event, employeeData) => {
+      try {
+        const result = await createEmployee(employeeData);
+        return { success: true, data: result };
+      } catch (error) {
+        console.error('Error creating employee:', error);
+        return { success: false, error: error.message };
+      }
+    });
+
+    ipcMain.handle('get-employees', async () => {
+      try {
+        const employees = await getEmployeesWithTrainingProgress();
+        return { success: true, data: employees };
+      } catch (error) {
+        console.error('Error fetching employees:', error);
+        return { success: false, error: error.message };
+      }
+    });
+
+    ipcMain.handle('get-employee-by-id', async (event, employeeId) => {
+      try {
+        const employee = await getEmployeeById(employeeId);
+        return { success: true, data: employee };
+      } catch (error) {
+        console.error('Error fetching employee:', error);
+        return { success: false, error: error.message };
+      }
+    });
+
+    ipcMain.handle('update-employee', async (event, employeeId, employeeData) => {
+      try {
+        const result = await updateEmployee(employeeId, employeeData);
+        return { success: true, data: result };
+      } catch (error) {
+        console.error('Error updating employee:', error);
+        return { success: false, error: error.message };
+      }
+    });
+
+    ipcMain.handle('delete-employee', async (event, employeeId) => {
+      try {
+        const result = await deleteEmployee(employeeId);
+        return { success: true, data: result };
+      } catch (error) {
+        console.error('Error deleting employee:', error);
+        return { success: false, error: error.message };
+      }
+    });
+
+    ipcMain.handle('assign-training-to-employee', async (event, employeeId, programId) => {
+      try {
+        const result = await assignTrainingToEmployee(employeeId, programId);
+        return { success: true, data: result };
+      } catch (error) {
+        console.error('Error assigning training:', error);
+        return { success: false, error: error.message };
+      }
+    });
+
+    ipcMain.handle('get-employee-training-assignments', async (event, employeeId) => {
+      try {
+        const assignments = await getEmployeeTrainingAssignments(employeeId);
+        return { success: true, data: assignments };
+      } catch (error) {
+        console.error('Error fetching employee assignments:', error);
+        return { success: false, error: error.message };
+      }
+    });
+
+    ipcMain.handle('update-training-progress', async (event, employeeId, moduleId, status, score) => {
+      try {
+        const result = await updateTrainingProgress(employeeId, moduleId, status, score);
+        return { success: true, data: result };
+      } catch (error) {
+        console.error('Error updating training progress:', error);
         return { success: false, error: error.message };
       }
     });
