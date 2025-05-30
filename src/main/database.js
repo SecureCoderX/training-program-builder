@@ -169,6 +169,146 @@ function getTrainingProgramById(id) {
 }
 
 /**
+ * Create a new training module
+ */
+function createTrainingModule(moduleData) {
+  return new Promise((resolve, reject) => {
+    const { program_id, name, description, content, duration_minutes, is_required, order_index } = moduleData;
+    
+    db.run(
+      `INSERT INTO training_modules 
+       (program_id, name, description, content, duration_minutes, is_required, order_index) 
+       VALUES (?, ?, ?, ?, ?, ?, ?)`,
+      [program_id, name, description, content || '', duration_minutes || 0, is_required ? 1 : 0, order_index || 0],
+      function(err) {
+        if (err) {
+          reject(err);
+          return;
+        }
+        
+        resolve({
+          id: this.lastID,
+          program_id,
+          name,
+          description,
+          content: content || '',
+          duration_minutes: duration_minutes || 0,
+          is_required: is_required ? 1 : 0,
+          order_index: order_index || 0,
+          created_date: new Date().toISOString()
+        });
+      }
+    );
+  });
+}
+
+/**
+ * Get modules for a training program
+ */
+function getModulesByProgramId(programId) {
+  return new Promise((resolve, reject) => {
+    db.all(
+      'SELECT * FROM training_modules WHERE program_id = ? ORDER BY order_index, created_date',
+      [programId],
+      (err, rows) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+        resolve(rows);
+      }
+    );
+  });
+}
+
+/**
+ * Update module order
+ */
+function updateModuleOrder(moduleId, newOrder) {
+  return new Promise((resolve, reject) => {
+    db.run(
+      'UPDATE training_modules SET order_index = ? WHERE id = ?',
+      [newOrder, moduleId],
+      function(err) {
+        if (err) {
+          reject(err);
+          return;
+        }
+        resolve({ id: moduleId, order_index: newOrder });
+      }
+    );
+  });
+}
+
+/**
+ * Update training module
+ */
+function updateTrainingModule(moduleId, moduleData) {
+  return new Promise((resolve, reject) => {
+    const { name, description, content, duration_minutes, is_required } = moduleData;
+    
+    db.run(
+      `UPDATE training_modules 
+       SET name = ?, description = ?, content = ?, duration_minutes = ?, is_required = ?
+       WHERE id = ?`,
+      [name, description, content, duration_minutes, is_required ? 1 : 0, moduleId],
+      function(err) {
+        if (err) {
+          reject(err);
+          return;
+        }
+        resolve({ id: moduleId, ...moduleData });
+      }
+    );
+  });
+}
+
+/**
+ * Delete training module
+ */
+function deleteTrainingModule(moduleId) {
+  return new Promise((resolve, reject) => {
+    db.run(
+      'DELETE FROM training_modules WHERE id = ?',
+      [moduleId],
+      function(err) {
+        if (err) {
+          reject(err);
+          return;
+        }
+        resolve({ id: moduleId });
+      }
+    );
+  });
+}
+
+/**
+ * Get training program with modules count
+ */
+function getTrainingProgramsWithModuleCounts() {
+  return new Promise((resolve, reject) => {
+    db.all(
+      `SELECT 
+        tp.*,
+        COUNT(tm.id) as module_count
+       FROM training_programs tp
+       LEFT JOIN training_modules tm ON tp.id = tm.program_id
+       WHERE tp.is_active = 1
+       GROUP BY tp.id
+       ORDER BY tp.created_date DESC`,
+      [],
+      (err, rows) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+        resolve(rows);
+      }
+    );
+  });
+}
+
+/**
  * Close database connection
  */
 function closeDatabase() {
@@ -193,5 +333,11 @@ module.exports = {
   createTrainingProgram,
   getTrainingPrograms,
   getTrainingProgramById,
+  getTrainingProgramsWithModuleCounts,
+  createTrainingModule,
+  getModulesByProgramId,
+  updateModuleOrder,
+  updateTrainingModule,
+  deleteTrainingModule,
   closeDatabase
 };

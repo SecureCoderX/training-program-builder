@@ -1,6 +1,7 @@
 const { app, BrowserWindow, ipcMain, Menu } = require('electron');
 const path = require('path');
-const { initializeDatabase, createTrainingProgram, getTrainingPrograms } = require('./database');
+const { initializeDatabase, createTrainingProgram, getTrainingPrograms, getTrainingProgramsWithModuleCounts, 
+        createTrainingModule, getModulesByProgramId, updateModuleOrder, updateTrainingModule, deleteTrainingModule } = require('./database');
 
 class TrainingProgramApp {
   constructor() {
@@ -82,10 +83,61 @@ class TrainingProgramApp {
 
     ipcMain.handle('get-training-programs', async () => {
       try {
-        const programs = await getTrainingPrograms();
+        const programs = await getTrainingProgramsWithModuleCounts();
         return { success: true, data: programs };
       } catch (error) {
         console.error('Error fetching training programs:', error);
+        return { success: false, error: error.message };
+      }
+    });
+
+    // Module management handlers
+    ipcMain.handle('create-training-module', async (event, moduleData) => {
+      try {
+        const result = await createTrainingModule(moduleData);
+        return { success: true, data: result };
+      } catch (error) {
+        console.error('Error creating training module:', error);
+        return { success: false, error: error.message };
+      }
+    });
+
+    ipcMain.handle('get-modules-by-program', async (event, programId) => {
+      try {
+        const modules = await getModulesByProgramId(programId);
+        return { success: true, data: modules };
+      } catch (error) {
+        console.error('Error fetching modules:', error);
+        return { success: false, error: error.message };
+      }
+    });
+
+    ipcMain.handle('update-module-order', async (event, moduleId, newOrder) => {
+      try {
+        const result = await updateModuleOrder(moduleId, newOrder);
+        return { success: true, data: result };
+      } catch (error) {
+        console.error('Error updating module order:', error);
+        return { success: false, error: error.message };
+      }
+    });
+
+    ipcMain.handle('update-training-module', async (event, moduleId, moduleData) => {
+      try {
+        const result = await updateTrainingModule(moduleId, moduleData);
+        return { success: true, data: result };
+      } catch (error) {
+        console.error('Error updating training module:', error);
+        return { success: false, error: error.message };
+      }
+    });
+
+    ipcMain.handle('delete-training-module', async (event, moduleId) => {
+      try {
+        const result = await deleteTrainingModule(moduleId);
+        return { success: true, data: result };
+      } catch (error) {
+        console.error('Error deleting training module:', error);
         return { success: false, error: error.message };
       }
     });

@@ -96,7 +96,7 @@
                                 <span class="empty-icon">📚</span>
                                 <h4>No training programs yet</h4>
                                 <p>Create your first training program to get started</p>
-                                <button class="btn btn-primary" onclick="showNewProgramModal()">
+                                <button class="btn btn-primary" onclick="window.trainingApp?.showNewProgramModal()">
                                     Create Program
                                 </button>
                             </div>
@@ -113,6 +113,41 @@
                     
                     <div id="programs-list" class="programs-grid">
                         <!-- Programs will be loaded here -->
+                    </div>
+                </div>
+
+                <!-- Program Detail View -->
+                <div id="program-detail-view" class="view">
+                    <div class="view-header">
+                        <div class="breadcrumb">
+                            <a href="#" onclick="trainingApp.switchView('programs')" class="breadcrumb-link">Programs</a>
+                            <span class="breadcrumb-separator">›</span>
+                            <span id="program-detail-name" class="breadcrumb-current">Program Detail</span>
+                        </div>
+                        <div class="program-detail-header">
+                            <div class="program-info">
+                                <h2 id="program-detail-title">Program Title</h2>
+                                <p id="program-detail-description" class="view-subtitle">Program description</p>
+                            </div>
+                            <div class="program-actions">
+                                <button id="add-module-btn" class="btn btn-primary">
+                                    <span class="btn-icon">+</span>
+                                    Add Module
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="program-content">
+                        <div class="modules-section">
+                            <div class="section-header">
+                                <h3>Training Modules</h3>
+                                <p class="section-subtitle">Drag to reorder modules</p>
+                            </div>
+                            <div id="modules-list" class="modules-container">
+                                <!-- Modules will be loaded here -->
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -157,6 +192,119 @@
                     <button type="submit" class="btn btn-primary">
                         Create Program
                     </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- New Module Modal -->
+    <div id="new-module-modal" class="modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3>Create New Training Module</h3>
+                <button class="modal-close" onclick="hideNewModuleModal()">&times;</button>
+            </div>
+            <form id="new-module-form" class="modal-body">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="module-name">Module Name</label>
+                        <input type="text" id="module-name" name="name" required 
+                               placeholder="e.g., Introduction to Safety, Equipment Operation">
+                    </div>
+                    <div class="form-group">
+                        <label for="module-duration">Duration (minutes)</label>
+                        <input type="number" id="module-duration" name="duration_minutes" min="0" 
+                               placeholder="30">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="module-description">Description</label>
+                    <textarea id="module-description" name="description" rows="3" 
+                              placeholder="Brief description of what this module covers"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="module-content">Content</label>
+                    <textarea id="module-content" name="content" rows="8" 
+                              placeholder="Enter the training content, instructions, procedures, etc."></textarea>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="module-required" name="is_required" checked>
+                            <span class="checkmark"></span>
+                            This module is required
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="hideNewModuleModal()">
+                        Cancel
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        Create Module
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Module Modal -->
+    <div id="edit-module-modal" class="modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3>Edit Training Module</h3>
+                <button class="modal-close" onclick="hideEditModuleModal()">&times;</button>
+            </div>
+            <form id="edit-module-form" class="modal-body">
+                <input type="hidden" id="edit-module-id" name="module_id">
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="edit-module-name">Module Name</label>
+                        <input type="text" id="edit-module-name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-module-duration">Duration (minutes)</label>
+                        <input type="number" id="edit-module-duration" name="duration_minutes" min="0">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="edit-module-description">Description</label>
+                    <textarea id="edit-module-description" name="description" rows="3"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="edit-module-content">Content</label>
+                    <textarea id="edit-module-content" name="content" rows="8"></textarea>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="edit-module-required" name="is_required">
+                            <span class="checkmark"></span>
+                            This module is required
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" onclick="handleDeleteModule()">
+                        Delete Module
+                    </button>
+                    <div class="modal-footer-right">
+                        <button type="button" class="btn btn-secondary" onclick="hideEditModuleModal()">
+                            Cancel
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            Save Changes
+                        </button>
+                    </div>
                 </div>
             </form>
         </div>
