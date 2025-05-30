@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Training Program Builder</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-content">
+                <h1 class="app-title">Training Program Builder</h1>
+                <div class="header-actions">
+                    <button id="new-program-btn" class="btn btn-primary">
+                        <span class="btn-icon">+</span>
+                        New Program
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <nav class="sidebar-nav">
+                    <ul class="nav-list">
+                        <li class="nav-item active">
+                            <a href="#dashboard" class="nav-link">
+                                <span class="nav-icon">📊</span>
+                                Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#programs" class="nav-link">
+                                <span class="nav-icon">📚</span>
+                                Programs
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#employees" class="nav-link">
+                                <span class="nav-icon">👥</span>
+                                Employees
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#reports" class="nav-link">
+                                <span class="nav-icon">📈</span>
+                                Reports
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#settings" class="nav-link">
+                                <span class="nav-icon">⚙️</span>
+                                Settings
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </aside>
+
+            <!-- Content Area -->
+            <section class="content-area">
+                <!-- Dashboard View -->
+                <div id="dashboard-view" class="view active">
+                    <div class="view-header">
+                        <h2>Dashboard</h2>
+                        <p class="view-subtitle">Overview of your training programs and employee progress</p>
+                    </div>
+                    
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-value" id="total-programs">0</div>
+                            <div class="stat-label">Training Programs</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">0</div>
+                            <div class="stat-label">Active Employees</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">0</div>
+                            <div class="stat-label">Completed Trainings</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">0%</div>
+                            <div class="stat-label">Completion Rate</div>
+                        </div>
+                    </div>
+
+                    <div class="recent-activity">
+                        <h3>Recent Training Programs</h3>
+                        <div id="recent-programs" class="program-list">
+                            <div class="empty-state">
+                                <span class="empty-icon">📚</span>
+                                <h4>No training programs yet</h4>
+                                <p>Create your first training program to get started</p>
+                                <button class="btn btn-primary" onclick="showNewProgramModal()">
+                                    Create Program
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Programs View -->
+                <div id="programs-view" class="view">
+                    <div class="view-header">
+                        <h2>Training Programs</h2>
+                        <p class="view-subtitle">Manage your training programs and modules</p>
+                    </div>
+                    
+                    <div id="programs-list" class="programs-grid">
+                        <!-- Programs will be loaded here -->
+                    </div>
+                </div>
+
+                <!-- Other views placeholder -->
+                <div id="employees-view" class="view">
+                    <div class="view-header">
+                        <h2>Employees</h2>
+                        <p class="view-subtitle">Manage employee profiles and training assignments</p>
+                    </div>
+                    <div class="empty-state">
+                        <span class="empty-icon">👥</span>
+                        <h4>Employee management coming soon</h4>
+                        <p>This feature will be available in the next update</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- New Program Modal -->
+    <div id="new-program-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Create New Training Program</h3>
+                <button class="modal-close" onclick="hideNewProgramModal()">&times;</button>
+            </div>
+            <form id="new-program-form" class="modal-body">
+                <div class="form-group">
+                    <label for="program-name">Program Name</label>
+                    <input type="text" id="program-name" name="name" required 
+                           placeholder="e.g., Safety Training, Customer Service">
+                </div>
+                <div class="form-group">
+                    <label for="program-description">Description</label>
+                    <textarea id="program-description" name="description" rows="4" 
+                              placeholder="Describe the purpose and content of this training program"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="hideNewProgramModal()">
+                        Cancel
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        Create Program
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Loading indicator -->
+    <div id="loading" class="loading-overlay" style="display: none;">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <script src="js/renderer.js"></script>
+</body>
+</html>

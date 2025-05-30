@@ -1,0 +1,39 @@
+{
+  "name": "training-program-builder",
+  "version": "1.0.0",
+  "main": "src/main/main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "electron .",
+    "dev": "electron . --inspect=5858",
+    "build": "electron-builder",
+    "clean": "rimraf dist/",
+    "lint": "eslint src/"
+  },
+  "keywords": [],
+  "author": "Chad Parker",
+  "license": "MIT",
+  "description": "Professional Training Program Builder for Small Businesses",
+  "devDependencies": {
+    "electron": "^36.3.2",
+    "electron-builder": "^26.0.12",
+    "eslint": "^9.28.0",
+    "rimraf": "^6.0.1"
+  },
+  "dependencies": {
+    "express": "^5.1.0",
+    "sqlite3": "^5.1.7"
+  },
+  "build": {
+    "appId": "com.gensoryx.training-program-builder",
+    "productName": "Training Program Builder",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "src/**/*",
+      "assets/**/*",
+      "node_modules/**/*"
+    ]
+  }
+}
