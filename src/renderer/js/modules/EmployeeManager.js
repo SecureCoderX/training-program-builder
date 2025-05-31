@@ -214,10 +214,14 @@ class EmployeeManager {
         const employee = this.employees.find(e => e.id === this.currentEmployeeId);
         if (!employee) return;
         
+        // Fix the bug - build the position/department string properly
+        const position = employee.position || 'No position';
+        const department = employee.department || 'No department';
+        const positionDept = `${position} • ${department}`;
+        
         document.getElementById('employee-detail-name').textContent = `${employee.first_name} ${employee.last_name}`;
         document.getElementById('employee-detail-title').textContent = `${employee.first_name} ${employee.last_name}`;
-        
-        document.getElementById('employee-detail-position').textContent = positionDept || 'No position or department specified';
+        document.getElementById('employee-detail-position').textContent = positionDept;
         
         document.getElementById('employee-assigned-programs').textContent = employee.assigned_programs || 0;
         document.getElementById('employee-completed-programs').textContent = employee.completed_programs || 0;

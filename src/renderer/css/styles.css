@@ -5,6 +5,444 @@
     box-sizing: border-box;
 }
 
+/* Reports and Analytics Styles */
+.reports-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+    margin-bottom: 32px;
+}
+
+.reports-info {
+    flex: 1;
+}
+
+.reports-actions {
+    flex-shrink: 0;
+}
+
+.quick-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-bottom: 32px;
+}
+
+.quick-stat-card {
+    background: white;
+    padding: 24px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.quick-stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+}
+
+.stat-icon {
+    font-size: 32px;
+    opacity: 0.8;
+}
+
+.stat-info {
+    flex: 1;
+}
+
+.stat-value {
+    font-size: 28px;
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 4px;
+}
+
+.stat-label {
+    color: #666;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* Report Results */
+.report-results-section {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+
+.report-results {
+    min-height: 400px;
+    padding: 24px;
+}
+
+.report-header {
+    border-bottom: 2px solid #e0e0e0;
+    padding-bottom: 16px;
+    margin-bottom: 24px;
+}
+
+.report-header h3 {
+    color: #2c3e50;
+    margin-bottom: 4px;
+    font-size: 24px;
+}
+
+.report-date,
+.report-period {
+    color: #666;
+    font-size: 14px;
+    margin: 0;
+}
+
+.report-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin: 24px 0;
+}
+
+.report-stat-card {
+    padding: 20px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    text-align: center;
+    background: #f8f9fa;
+}
+
+.report-stat-card.success {
+    background: #e8f5e8;
+    border-color: #4caf50;
+}
+
+.report-stat-card.warning {
+    background: #fff3e0;
+    border-color: #ff9800;
+}
+
+.report-stat-card.danger {
+    background: #ffebee;
+    border-color: #f44336;
+}
+
+/* Department Breakdown */
+.department-breakdown {
+    display: grid;
+    gap: 12px;
+}
+
+.dept-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    background: #f8f9fa;
+    border-radius: 6px;
+    border-left: 4px solid #1976d2;
+}
+
+.dept-name {
+    font-weight: 500;
+    color: #2c3e50;
+}
+
+.dept-stats {
+    display: flex;
+    gap: 16px;
+    font-size: 14px;
+    color: #666;
+}
+
+.completion-rate {
+    font-weight: 500;
+    color: #1976d2;
+}
+
+/* Employee Progress Table */
+.employee-progress-table {
+    overflow-x: auto;
+    margin: 24px 0;
+}
+
+.employee-progress-table table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+}
+
+.employee-progress-table th,
+.employee-progress-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.employee-progress-table th {
+    background: #f5f5f5;
+    font-weight: 600;
+    color: #2c3e50;
+    font-size: 14px;
+}
+
+.employee-info strong {
+    display: block;
+    color: #2c3e50;
+    margin-bottom: 2px;
+}
+
+.employee-info small {
+    color: #666;
+    font-size: 12px;
+}
+
+.progress-bar-small {
+    width: 60px;
+    height: 6px;
+    background: #e0e0e0;
+    border-radius: 3px;
+    overflow: hidden;
+    display: inline-block;
+    margin-right: 8px;
+}
+
+.progress-text {
+    font-size: 12px;
+    color: #666;
+    font-weight: 500;
+}
+
+/* Program Analytics */
+.program-analytics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    margin: 24px 0;
+}
+
+.program-analytics-card {
+    background: #f8f9fa;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 20px;
+}
+
+.program-analytics-card h4 {
+    color: #2c3e50;
+    margin-bottom: 16px;
+    font-size: 16px;
+}
+
+.analytics-stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+
+.analytics-stat {
+    text-align: center;
+    padding: 12px;
+    background: white;
+    border-radius: 6px;
+}
+
+.analytics-stat .value {
+    display: block;
+    font-size: 20px;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 4px;
+}
+
+.analytics-stat .label {
+    font-size: 12px;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Compliance Report */
+.compliance-overview {
+    display: flex;
+    justify-content: center;
+    margin: 24px 0;
+}
+
+.compliance-stat-card {
+    text-align: center;
+    padding: 32px;
+    background: #f8f9fa;
+    border-radius: 12px;
+    border: 2px solid #e0e0e0;
+}
+
+.compliance-stat-card .stat-value {
+    font-size: 48px;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.compliance-stat-card .stat-value.success {
+    color: #4caf50;
+}
+
+.compliance-stat-card .stat-value.warning {
+    color: #ff9800;
+}
+
+.compliance-stat-card .stat-value.danger {
+    color: #f44336;
+}
+
+.report-sections {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 24px;
+    margin: 32px 0;
+}
+
+.report-section h4 {
+    color: #2c3e50;
+    margin-bottom: 16px;
+    font-size: 18px;
+}
+
+.overdue-list,
+.at-risk-list {
+    display: grid;
+    gap: 8px;
+}
+
+.overdue-item,
+.at-risk-item {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 12px;
+    padding: 12px;
+    background: #f8f9fa;
+    border-radius: 6px;
+    align-items: center;
+    font-size: 14px;
+}
+
+.employee-name {
+    font-weight: 500;
+    color: #2c3e50;
+}
+
+.department {
+    color: #666;
+}
+
+.overdue-count,
+.days-past {
+    color: #f44336;
+    font-weight: 500;
+}
+
+.risk-level {
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+    text-align: center;
+}
+
+.risk-high {
+    background: #ffebee;
+    color: #f44336;
+}
+
+/* Export Section */
+.report-export-section {
+    background: #f8f9fa;
+    border-top: 1px solid #e0e0e0;
+    padding: 24px;
+}
+
+.export-header {
+    margin-bottom: 16px;
+}
+
+.export-header h4 {
+    color: #2c3e50;
+    margin-bottom: 4px;
+}
+
+.export-header p {
+    color: #666;
+    font-size: 14px;
+    margin: 0;
+}
+
+.export-buttons {
+    display: flex;
+    gap: 12px;
+}
+
+/* Status badges for reports */
+.status-badge.no-assignments {
+    background: #f5f5f5;
+    color: #666;
+}
+
+.status-badge.compliant {
+    background: #e8f5e8;
+    color: #2e7d32;
+}
+
+.status-badge.in-progress {
+    background: #fff3e0;
+    color: #f57c00;
+}
+
+.status-badge.not-started {
+    background: #ffebee;
+    color: #d32f2f;
+}
+
+/* Responsive design for reports */
+@media (max-width: 768px) {
+    .reports-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .reports-actions {
+        justify-content: stretch;
+    }
+    
+    .reports-actions .btn {
+        width: 100%;
+    }
+    
+    .quick-stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .report-sections {
+        grid-template-columns: 1fr;
+    }
+    
+    .overdue-item,
+    .at-risk-item {
+        grid-template-columns: 1fr;
+        gap: 4px;
+    }
+    
+    .employee-progress-table {
+        font-size: 12px;
+    }
+    
+    .program-analytics-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
 /* Employee management styles */
 .employees-header,
 .employee-detail-header {

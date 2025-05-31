@@ -1,4 +1,99 @@
-<!DOCTYPE html>
+<!-- Reports View -->
+                <div id="reports-view" class="view">
+                    <div class="view-header">
+                        <div class="reports-header">
+                            <div class="reports-info">
+                                <h2>Reports & Analytics</h2>
+                                <p class="view-subtitle">Generate detailed reports and analyze training data</p>
+                            </div>
+                            <div class="reports-actions">
+                                <button id="generate-report-btn" class="btn btn-primary">
+                                    <span class="btn-icon">📊</span>
+                                    Generate Report
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="reports-content">
+                        <!-- Quick Stats -->
+                        <div class="quick-stats-grid">
+                            <div class="quick-stat-card">
+                                <div class="stat-icon">📈</div>
+                                <div class="stat-info">
+                                    <div class="stat-value" id="completion-rate">0%</div>
+                                    <div class="stat-label">Overall Completion Rate</div>
+                                </div>
+                            </div>
+                            <div class="quick-stat-card">
+                                <div class="stat-icon">⏰</div>
+                                <div class="stat-info">
+                                    <div class="stat-value" id="avg-completion-time">0</div>
+                                    <div class="stat-label">Avg Completion Time (days)</div>
+                                </div>
+                            </div>
+                            <div class="quick-stat-card">
+                                <div class="stat-icon">🚨</div>
+                                <div class="stat-info">
+                                    <div class="stat-value" id="overdue-count">0</div>
+                                    <div class="stat-label">Overdue Trainings</div>
+                                </div>
+                            </div>
+                            <div class="quick-stat-card">
+                                <div class="stat-icon">🏆</div>
+                                <div class="stat-info">
+                                    <div class="stat-value" id="certificates-issued">0</div>
+                                    <div class="stat-label">Certificates Issued</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Report Results -->
+                        <div class="report-results-section">
+                            <div id="report-results" class="report-results">
+                                <div class="empty-state">
+                                    <span class="empty-icon">📊</span>
+                                    <h4>No reports generated yet</h4>
+                                    <p>Generate your first report to see detailed analytics</p>
+                                    <button class="btn btn-primary" onclick="window.app.reportsManager.showReportModal()">
+                                        Generate Report
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- Export Options -->
+                            <div id="report-export-section" class="report-export-section" style="display: none;">
+                                <div class="export-header">
+                                    <h4>Export Report</h4>
+                                    <p>Download your report in different formats</p>
+                                </div>
+                                <div class="export-buttons">
+                                    <button id="export-pdf-btn" class="btn btn-secondary">
+                                        <span class="btn-icon">📄</span>
+                                        Export to PDF
+                                    </button>
+                                    <button id="export-excel-btn" class="btn btn-secondary">
+                                        <span class="btn-icon">📊</span>
+                                        Export to Excel
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Other views placeholder -->
+                <div id="settings-view" class="view">
+                    <div class="view-header">
+                        <h2>Settings</h2>
+                        <p class="view-subtitle">Application settings and preferences</p>
+                    </div>
+                    <div class="empty-state">
+                        <span class="empty-icon">⚙️</span>
+                        <h4>Settings panel coming soon</h4>
+                        <p>This feature will be available in the next update</p>
+                    </div>
+                </div><!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -555,17 +650,78 @@
         </div>
     </div>
 
+    </div>
+
+    <!-- Generate Report Modal -->
+    <div id="generate-report-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Generate Report</h3>
+                <button class="modal-close" onclick="hideGenerateReportModal()">&times;</button>
+            </div>
+            <form id="generate-report-form" class="modal-body">
+                <div class="form-group">
+                    <label for="report-type">Report Type</label>
+                    <select id="report-type" name="report_type" required>
+                        <option value="">Choose a report type...</option>
+                        <option value="completion-summary">Training Completion Summary</option>
+                        <option value="employee-progress">Employee Progress Report</option>
+                        <option value="program-analytics">Program Analytics</option>
+                        <option value="compliance-report">Compliance Report</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="date-range">Date Range</label>
+                    <select id="date-range" name="date_range">
+                        <option value="last-30-days">Last 30 Days</option>
+                        <option value="last-90-days">Last 90 Days</option>
+                        <option value="last-6-months">Last 6 Months</option>
+                        <option value="last-year">Last Year</option>
+                        <option value="all-time">All Time</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="include-departments">Filter by Department (Optional)</label>
+                    <select id="include-departments" name="departments" multiple>
+                        <option value="engineering">Engineering</option>
+                        <option value="sales">Sales</option>
+                        <option value="marketing">Marketing</option>
+                        <option value="hr">Human Resources</option>
+                        <option value="operations">Operations</option>
+                    </select>
+                    <small>Hold Ctrl/Cmd to select multiple departments</small>
+                </div>
+                
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="hideGenerateReportModal()">
+                        Cancel
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        Generate Report
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- Loading indicator -->
     <div id="loading" class="loading-overlay" style="display: none;">
         <div class="loading-spinner"></div>
     </div>
 
-    <!-- Load modules in dependency order -->
-    <script src="js/services/APIService.js"></script>
-    <script src="js/components/UIUtils.js"></script>
-    <script src="js/components/ModalManager.js"></script>
-    <script src="js/modules/ProgramManager.js"></script>
-    <script src="js/modules/EmployeeManager.js"></script>
-    <script src="js/renderer.js"></script>
+    <!-- Core utilities and components (load first) -->
+<script src="js/components/UIUtils.js"></script>
+<script src="js/components/ModalManager.js"></script>
+<script src="js/services/APIService.js"></script>
+
+<!-- Business logic managers (load after utilities) -->
+<script src="js/modules/ProgramManager.js"></script>
+<script src="js/modules/EmployeeManager.js"></script>
+<script src="js/modules/ReportsManager.js"></script>
+
+<!-- Main application orchestrator (load last) -->
+<script src="js/renderer.js"></script>
 </body>
 </html>
