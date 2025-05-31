@@ -9,7 +9,11 @@ class TrainingProgramApp {
         this.programManager = null;
         this.employeeManager = null;
         this.reportsManager = null;
+        this.settingsManager = null;
         this.hasReportsManager = false;
+        this.hasSettingsManager = false;
+        this.scrollPositions = new Map();
+        
         this.initialize();
     }
 
@@ -35,12 +39,18 @@ class TrainingProgramApp {
             if (this.hasReportsManager) {
                 this.reportsManager = new ReportsManager();
             }
+
+            if (this.hasSettingsManager) {
+                this.settingsManager = new SettingsManager();
+                console.log('SettingsManager initialized');
+            }
             
             // Setup core event listeners
             this.setupNavigationHandlers();
             this.setupGlobalModalHandlers();
             this.setupFormHandlers();
             this.setupMenuHandlers();
+            this.setupScrollEnhancements(); // 👈 ADD THIS LINE
             
             // Load initial data and update dashboard
             console.log('Loading initial data...');
@@ -89,11 +99,103 @@ class TrainingProgramApp {
             throw new Error('Electron API not available - check preload script');
         }
         
-        // ReportsManager is optional
+        // Optional modules
         this.hasReportsManager = !!window.ReportsManager;
-        console.log('ReportsManager available:', this.hasReportsManager);
+        this.hasSettingsManager = !!window.SettingsManager;
         
+        console.log('ReportsManager available:', this.hasReportsManager);
+        console.log('SettingsManager available:', this.hasSettingsManager);
         console.log('All required modules loaded successfully');
+    }
+
+    // ============================================================================
+    // SCROLL ENHANCEMENTS
+    // ============================================================================
+
+    setupScrollEnhancements() {
+        // Add scroll shadow effects
+        const contentArea = document.querySelector('.content-area');
+        if (contentArea) {
+            contentArea.addEventListener('scroll', () => {
+                if (contentArea.scrollTop > 10) {
+                    contentArea.classList.add('scrolled');
+                } else {
+                    contentArea.classList.remove('scrolled');
+                }
+            });
+        }
+
+        // Keyboard navigation enhancements
+        document.addEventListener('keydown', (e) => {
+            // Ctrl/Cmd + Home = scroll to top
+            if ((e.ctrlKey || e.metaKey) && e.key === 'Home') {
+                e.preventDefault();
+                if (contentArea) {
+                    contentArea.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+            }
+            
+            // Ctrl/Cmd + End = scroll to bottom
+            if ((e.ctrlKey || e.metaKey) && e.key === 'End') {
+                e.preventDefault();
+                if (contentArea) {
+                    contentArea.scrollTo({ 
+                        top: contentArea.scrollHeight, 
+                        behavior: 'smooth' 
+                    });
+                }
+            }
+        });
+
+        // Auto-scroll to active navigation item in sidebar
+        this.scrollToActiveNav = () => {
+            const activeNavItem = document.querySelector('.nav-item.active .nav-link');
+            if (activeNavItem) {
+                activeNavItem.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'nearest',
+                    inline: 'nearest'
+                });
+            }
+        };
+
+        // Auto-scroll when modal content is too tall
+        document.addEventListener('click', (e) => {
+            if (e.target.closest('.modal-close') || e.target.classList.contains('modal')) {
+                // Reset modal scroll position when closing
+                setTimeout(() => {
+                    document.querySelectorAll('.modal-content').forEach(modal => {
+                        modal.scrollTop = 0;
+                    });
+                }, 300);
+            }
+        });
+
+        // Enhance switchView with scroll management
+        const originalSwitchView = this.switchView.bind(this);
+        this.switchView = (viewId) => {
+            // Save current scroll position
+            if (contentArea && this.currentView) {
+                this.scrollPositions.set(this.currentView, contentArea.scrollTop);
+            }
+            
+            // Call original switchView
+            const result = originalSwitchView(viewId);
+            
+            // Handle scroll position after view switch
+            setTimeout(() => {
+                if (contentArea) {
+                    // Only restore scroll for certain views (not settings/reports that should start at top)
+                    if (['programs', 'employees'].includes(viewId) && this.scrollPositions.has(viewId)) {
+                        contentArea.scrollTop = this.scrollPositions.get(viewId);
+                    } else {
+                        contentArea.scrollTo({ top: 0, behavior: 'smooth' });
+                    }
+                }
+            }, 100);
+            
+            return result;
+        };
     }
 
     // ============================================================================
@@ -434,6 +536,13 @@ class TrainingProgramApp {
                         this.showReportsUnavailable();
                     }
                     break;
+                case 'settings':
+                    if (this.settingsManager && this.settingsManager.renderSettings) {
+                        this.settingsManager.renderSettings();
+                    } else {
+                        this.showSettingsUnavailable();
+                    }
+                    break;
                 case 'dashboard':
                     this.updateDashboard();
                     break;
@@ -569,6 +678,19 @@ class TrainingProgramApp {
             const element = document.getElementById(id);
             if (element) element.textContent = value;
         });
+    }
+
+    showSettingsUnavailable() {
+        const container = document.getElementById('settings-container');
+        if (container) {
+            container.innerHTML = `
+                <div class="empty-state">
+                    <span class="empty-icon">⚙️</span>
+                    <h4>Settings Module Not Available</h4>
+                    <p>Create the SettingsManager.js file to enable application settings</p>
+                </div>
+            `;
+        }
     }
 }
 
